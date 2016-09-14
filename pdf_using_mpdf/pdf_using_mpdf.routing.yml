@@ -5,13 +5,13 @@ pdf_using_mpdf.admin_form:
     _form: '\Drupal\pdf_using_mpdf\Form\AdminSettingsForm'
     _title: 'PDF using mPDF settings'
   requirements:
-    _permission: 'administer mpdf settingssss'
+    _permission: 'administer mpdf settings'
 
 #TODO: give permission generate pdf using mpdf to this route.
-pdf_using_mpdf.generate_pdf:
-  path: 'admin/config/convert'
-  defaults:
-    _controller: '\Drupal\pdf_using_mpdf\Controller\ConvertToPdf::convert'
-    _title: 'Convert Node to PDF document'
-  requirements:
-    _permission: 'access content'
+#pdf_using_mpdf.generate_pdf:
+#  path: 'admin/config/convert'
+#  defaults:
+#    _controller: '\Drupal\pdf_using_mpdf\Controller\ConvertToPdf::convert'
+#    _title: 'Convert Node to PDF document'
+#  requirements:
+#    _permission: 'access content'

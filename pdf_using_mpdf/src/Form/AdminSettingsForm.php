@@ -27,8 +27,11 @@ class AdminSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+//TODO: fix error on password removal.
     // Fetch settings for this form.
-    $settings = $this->config('pdf_using_mpdf.settings')->get('pdf_using_mpdf');
+    $settings = $this->configFactory()
+      ->getEditable('pdf_using_mypdf.settings')
+      ->get('pdf_using_mpdf');
 
     $form['pdf'] = [
       '#type' => 'details',
@@ -303,6 +306,41 @@ class AdminSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    $values = $form_state->getValues();
+    $settings = [
+      'pdf_filename' => $values['pdf_filename'],
+      'pdf_save_option' => $values['pdf_save_option'],
+      'pdf_set_title' => $values['pdf_set_title'],
+      'pdf_set_author' => $values['pdf_set_author'],
+      'pdf_set_subject' => $values['pdf_set_subject'],
+      'pdf_set_creator' => $values['pdf_set_creator'],
+      'margin_top' => $values['margin_top'],
+      'margin_right' => $values['margin_right'],
+      'margin_bottom' => $values['margin_bottom'],
+      'margin_left' => $values['margin_left'],
+      'margin_header' => $values['margin_header'],
+      'margin_footer' => $values['margin_footer'],
+      'pdf_font_size' => $values['pdf_font_size'],
+      'pdf_default_font' => $values['pdf_default_font'],
+      'pdf_page_size' => $values['pdf_page_size'],
+      'dpi' => $values['dpi'],
+      'img_dpi' => $values['img_dpi'],
+      'watermark_option' => $values['watermark_option'],
+      'watermark_opacity' => $values['watermark_opacity'],
+      'pdf_watermark_text' => $values['pdf_watermark_text'],
+      'watermark_image' => $values['watermark_image'],
+      'pdf_header' => $values['pdf_header'],
+      'pdf_footer' => $values['pdf_footer'],
+      'pdf_password' => $values['pdf_password'],
+      'pdf_css_file' => $values['pdf_css_file'],
+    ];
+
+    // Save the configuration into database.
+    $this->configFactory()
+      ->getEditable('pdf_using_mypdf.settings')
+      ->set('pdf_using_mpdf', $settings)
+      ->save();
+
     parent::submitForm($form, $form_state);
   }
 }
