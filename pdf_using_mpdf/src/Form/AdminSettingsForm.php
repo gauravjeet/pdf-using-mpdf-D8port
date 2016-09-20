@@ -28,6 +28,7 @@ class AdminSettingsForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
 //TODO: fix error on password removal.
+//TODO: default settings do not apply on module install.
     // Fetch settings for this form.
     $settings = $this->configFactory()
       ->getEditable('pdf_using_mypdf.settings')
@@ -267,6 +268,7 @@ class AdminSettingsForm extends ConfigFormBase {
         '#description' => $this->t('If password is not required, leave blank. Do not use space in starting and ending of password.'),
       ];
     }
+
     // Setting Style Sheets to PDF.
     $form['pdf']['style'] = [
       '#type' => 'details',

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Prints PDF for a given html node view.
@@ -20,8 +19,8 @@ function pdf_using_mpdf_help($path, $arg) {
   }
 }
 
+//TODO: remove this hook.
 /**
- * TODO: remove this function.
  * Implements hook_menu().
  */
 function pdf_using_mpdf_menu() {
@@ -321,6 +320,8 @@ function _pdf_using_mpdf_generator($html, $filename = NULL) {
 }
 
 /**
+ * 
+ * TODO: Create this as a service.
  * API to generate a PDF file.
  *
  * @param string $html
