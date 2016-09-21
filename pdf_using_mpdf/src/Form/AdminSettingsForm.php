@@ -27,7 +27,7 @@ class AdminSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-//TODO: fix error on password removal.
+//TODO: default settings do not apply on module install.
     // Fetch settings for this form.
     $settings = $this->configFactory()
       ->getEditable('pdf_using_mypdf.settings')
@@ -254,7 +254,7 @@ class AdminSettingsForm extends ConfigFormBase {
     if (isset($pwd) && $pwd != NULL) {
       $form['pdf']['permission']['msg'] = [
         '#type' => 'markup',
-        '#markup' => $this->t('<p>Password : ******** is already set.</p>'),
+        '#markup' => $this->t('<p>***** Password is already set *****</p>'),
       ];
       $form['pdf']['permission']['remove_pwd'] = [
         '#type' => 'checkbox',
@@ -267,6 +267,7 @@ class AdminSettingsForm extends ConfigFormBase {
         '#description' => $this->t('If password is not required, leave blank. Do not use space in starting and ending of password.'),
       ];
     }
+
     // Setting Style Sheets to PDF.
     $form['pdf']['style'] = [
       '#type' => 'details',
@@ -305,6 +306,47 @@ class AdminSettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    $values = $form_state->getValues();
+
+    // Check for mPDF library existence.
+    if (class_exists('mPDF')) {
+      if (!is_numeric($values['pdf_font_size']) || $values['pdf_font_size'] < 1) {
+        $form_state->setErrorByName('pdf_font_size', $this->t('Font size should be numeric and greater than 1.'));
+      }
+      if (!is_numeric($values['margin_top']) || $values['margin_top'] <= 0) {
+        $form_state->setErrorByName('margin_top', $this->t('PDF top margin should be numeric and greater than -1.'));
+      }
+      if (!is_numeric($values['margin_right']) || $values['margin_right'] <= 0) {
+        $form_state->setErrorByName('margin_right', $this->t('PDF right margin should be numeric and greater than -1.'));
+      }
+      if (!is_numeric($values['margin_bottom']) || $values['margin_bottom'] <= 0) {
+        $form_state->setErrorByName('margin_bottom', $this->t('PDF bottom margin should be numeric and greater than -1.'));
+      }
+      if (!is_numeric($values['margin_left']) || $values['margin_left'] <= 0) {
+        $form_state->setErrorByName('margin_left', $this->t('PDF left margin should be numeric and greater than -1.'));
+      }
+      if (!is_numeric($values['margin_header']) || $values['margin_header'] <= 0) {
+        $form_state->setErrorByName('margin_header', $this->t('PDF header margin should be numeric and greater than -1.'));
+      }
+      if (!is_numeric($values['margin_footer']) || $values['margin_footer'] <= 0) {
+        $form_state->setErrorByName('margin_footer', $this->t('PDF footer margin should be numeric and greater than -1.'));
+      }
+      if (!is_numeric($values['dpi']) || $values['dpi'] < 0) {
+        $form_state->setErrorByName('dpi', $this->t('Document DPI should be numeric and greater than 0.'));
+      }
+      if (!is_numeric($values['img_dpi']) || $values['img_dpi'] < 0) {
+        $form_state->setErrorByName('img_dpi', $this->t('Image DPI should be numeric and greater than 0.'));
+      }
+    }
+    else {
+      $form_state->setError($form['pdf'], 'mPDF library is not loaded. Please read README.txt for installing it.');
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $values = $form_state->getValues();
     $settings = [
@@ -331,9 +373,17 @@ class AdminSettingsForm extends ConfigFormBase {
       'watermark_image' => $values['watermark_image'],
       'pdf_header' => $values['pdf_header'],
       'pdf_footer' => $values['pdf_footer'],
-      'pdf_password' => $values['pdf_password'],
       'pdf_css_file' => $values['pdf_css_file'],
     ];
+
+    if (isset($values['remove_pwd'])) {
+      if ($values['remove_pwd'] == '1') {
+        $settings['pdf_password'] = NULL;
+      }
+    }
+    else {
+      $settings['pdf_password'] = $values['pdf_password'];
+    }
 
     // Save the configuration into database.
     $this->configFactory()

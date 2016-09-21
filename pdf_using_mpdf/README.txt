@@ -1,3 +1,8 @@
+TODO: update content :
+ - run composer update prior to module installation
+
+
+
 MODULE
 ------
 PDF using mPDF
