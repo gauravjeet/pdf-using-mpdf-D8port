@@ -35,11 +35,7 @@ class ConvertToPdf {
       return TRUE;
     }
     else {
-
-//TODO: t() used here.
-      drupal_set_message(t('mPDF library is not included. Please run "composer install" in the root directory of your project to download and include the mPDF library.', [
-        '@default_module_path' => drupal_get_path('module', 'pdf_using_mpdf'),
-      ]), 'warning');
+      drupal_set_message($this->t('mPDF library is not included. Please run "composer install" in the root directory of your project to download it.'), 'warning');
       return FALSE;
     }
   }

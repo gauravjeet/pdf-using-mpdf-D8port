@@ -4,9 +4,12 @@
  * Prints PDF for a given html node view.
  */
 
+//TODO: do we really need this constant ? can be removed.
 define('PDF_USING_MPDF_PDF_DEFAULT_FILENAME', '[site:name] - [node:title] - [node:changed:custom:Y-m-d]');
 
 /**
+ * TODO: do this the D8 way.
+ * 
  * Implements hook_help().
  */
 function pdf_using_mpdf_help($path, $arg) {
@@ -72,6 +75,8 @@ function _pdf_using_mpdf_attributes_access($node) {
 }
 
 /**
+ * TODO: to be used in the ConvertToPdf service.
+ * 
  * Generate the PDF file using the mPDF library.
  *
  * @param string $html
@@ -321,7 +326,7 @@ function _pdf_using_mpdf_generator($html, $filename = NULL) {
 
 /**
  * 
- * TODO: Create this as a service.
+ * TODO: Call this as a service.
  * API to generate a PDF file.
  *
  * @param string $html
@@ -349,6 +354,7 @@ function pdf_using_mpdf_api($html, $pdf_using_mpdf_pdf_filename = NULL) {
 }
 
 /**
+ * TODO: remove this function as we are not using Library module.
  * Function to check existence of mPDF library.
  *
  * @return bool
